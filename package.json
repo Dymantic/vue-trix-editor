@@ -6,9 +6,11 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:unit"
+    "test": "vue-cli-service test:unit",
+    "wtest": "vue-cli-service test:unit --watch"
   },
   "dependencies": {
+    "trix": "^0.12.0",
     "vue": "^2.5.17"
   },
   "devDependencies": {
