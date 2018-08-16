@@ -1,10 +1,11 @@
 {
-  "name": "trix-vue-wysiwyg",
+  "name": "@dymantic/trix-vue",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/TrixVue.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name TrixVue ./src/components/TrixVueWysiwyg.vue",
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit",
     "wtest": "vue-cli-service test:unit --watch"
@@ -21,6 +22,7 @@
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
+    "sinon": "^6.1.5",
     "vue-template-compiler": "^2.5.17"
   }
 }
