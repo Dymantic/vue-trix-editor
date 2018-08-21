@@ -5,13 +5,14 @@
            Insert Image
            <input ref="insertImageInput" type="file" id="`image-file-input-${uniqueId}`" class="hidden-input" @change="insertImage">
         </label>
+        <button class="dd_save-content" @click="saveContent" v-show="savePath">Save</button>
       </div>
         <trix-editor @trix-file-accept="guardFiles"
                      @trix-attachment-add="acceptImage"
                      ref="trix"
                      :input="uniqueId"
         ></trix-editor>
-        <input type="text" :id="uniqueId" name="" :value="initialContent">
+        <input type="hidden" :id="uniqueId" name="content">
     </div>
 </template>
 
@@ -19,9 +20,16 @@
 //eslint-disable-next-line
 import Trix from "trix";
 import ImageAttachment from "@/ImageAttachment";
-// import _ from "trix/dist/trix.css";
+import "trix/dist/trix.css";
+
+import axios from "axios";
 
 export default {
+  model: {
+    prop: "initial-content",
+    event: "input"
+  },
+
   props: {
     initialContent: {
       type: String,
@@ -37,17 +45,40 @@ export default {
     maxImageFileSize: {
       type: Number,
       default: 5
+    },
+    savePath: {
+      type: String,
+      default: ""
+    },
+    saveTimer: {
+      type: Number,
+      default: 0
     }
+  },
+
+  data() {
+    return {
+      last_saved_document: null
+    };
   },
 
   mounted() {
     this.$refs.trix.addEventListener("trix-initialize", this.init);
+    if (this.saveTimer && this.savePath) {
+      window.setInterval(() => {
+        if (this.documentChanged()) {
+          this.saveContent();
+        }
+      }, this.saveTimer * 1000);
+    }
   },
 
   methods: {
     init() {
+      this.$refs.trix.editor.insertHTML(this.initialContent);
+      this.last_saved_document = this.currentDocument();
       this.$refs.trix.addEventListener("trix-change", () => {
-        this.$emit("input", this.content);
+        this.$emit("input", this.content());
       });
     },
 
@@ -61,7 +92,7 @@ export default {
       }
     },
 
-    takeFile(ev) {
+    takeFile() {
       return this.$refs.insertImageInput.files[0];
     },
 
@@ -83,6 +114,29 @@ export default {
 
     rejectFile(file, message) {
       this.$emit("image-rejected", { file, message });
+    },
+
+    content() {
+      return document.querySelector(`#${this.uniqueId}`).value;
+    },
+
+    saveContent() {
+      const last_doc = this.currentDocument();
+      axios
+        .post(this.savePath, { content: this.content() })
+        .then(() => {
+          this.last_saved_document = last_doc;
+          this.$emit("content-saved");
+        })
+        .catch(() => this.$emit("content-save-failed"));
+    },
+
+    documentChanged() {
+      return !this.currentDocument().isEqualTo(this.last_saved_document);
+    },
+
+    currentDocument() {
+      return this.$refs.trix.editor.getDocument();
     }
   }
 };
