@@ -1,11 +1,19 @@
 <template>
     <div>
-      <div>
-        <label v-if="imageUploadPath" for="`image-file-input-${uniqueId}`">
-           Insert Image
+      <div class="dd-trix-toolbar">
+        <label v-if="imageUploadPath" for="`image-file-input-${uniqueId}`" class="dd-insert-image-label">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#333" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+           <span>Insert Image</span>
            <input ref="insertImageInput" type="file" id="`image-file-input-${uniqueId}`" class="hidden-input" @change="insertImage">
         </label>
-        <button class="dd_save-content" @click="saveContent" v-show="savePath">Save</button>
+        <div class="dd-save-content">
+          <span v-show="last_saved_time">Last saved: {{ last_saved_at }}</span>
+          <button class="dd_save-content" @click="saveContent" v-show="savePath">
+            <span>Save </span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="16px" fill="#bbb"><path d="M0 2C0 .9.9 0 2 0h14l4 4v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5 0v6h10V2H5zm6 1h3v4h-3V3z"/></svg>
+            </button>
+        </div>
+        
       </div>
         <trix-editor @trix-file-accept="guardFiles"
                      @trix-attachment-add="acceptImage"
@@ -57,8 +65,19 @@ export default {
 
   data() {
     return {
-      last_saved_document: null
+      last_saved_document: null,
+      last_saved_time: null
     };
+  },
+
+  computed: {
+    last_saved_at() {
+      if (!(this.last_saved_time instanceof Date)) {
+        return "";
+      }
+
+      return this.last_saved_time.toLocaleTimeString();
+    }
   },
 
   mounted() {
@@ -125,6 +144,7 @@ export default {
         .post(this.savePath, { content: this.content() })
         .then(() => {
           this.last_saved_document = last_doc;
+          this.last_saved_time = new Date();
           this.$emit("content-saved");
         })
         .catch(() => this.$emit("content-save-failed"));
@@ -142,6 +162,44 @@ export default {
 </script>
 
 <style>
+.dd-trix-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+}
+
+.dd-trix-toolbar .dd-save-content {
+  display: flex;
+  align-items: center;
+}
+
+.dd-trix-toolbar .dd-save-content button {
+  border: 1px solid #bbb;
+  margin-left: 0.5rem;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.dd-trix-toolbar .dd-save-content button svg {
+  margin-left: 8px;
+}
+
+.dd-trix-toolbar .dd-insert-image-label {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  border: 1px solid #bbb;
+  padding: 4px;
+}
+
+.dd-trix-toolbar .dd-insert-image-label svg {
+  margin-right: 5px;
+}
+
+.dd-trix-toolbar .dd-insert-image-label input {
+  display: none;
+}
 trix-editor {
   border: 1px solid #bbb;
   border-radius: 3px;
