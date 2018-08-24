@@ -359,12 +359,12 @@ describe("the TrixVue component", () => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
       savePath: "/test-save-url",
-      saveTimer: 1
+      saveTimer: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ saveContent: save, documentChanged: () => true });
 
-    wait(2).then(() => {
+    wait(0.2).then(() => {
       expect(save.called).toBe(true);
       done();
     });
@@ -373,12 +373,12 @@ describe("the TrixVue component", () => {
   it("will not attempt to auto save if there is no save path", done => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
-      saveTimer: 1
+      saveTimer: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ saveContent: save, documentChanged: () => true });
 
-    wait(2).then(() => {
+    wait(0.2).then(() => {
       expect(save.called).toBe(false);
       done();
     });
@@ -388,12 +388,12 @@ describe("the TrixVue component", () => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
       savePath: "/test-save-url",
-      saveTimer: 1
+      saveTimer: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ documentChanged: () => false });
 
-    wait(2).then(() => {
+    wait(0.2).then(() => {
       expect(save.called).toBe(false);
       done();
     });
