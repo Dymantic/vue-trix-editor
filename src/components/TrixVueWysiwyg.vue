@@ -57,7 +57,7 @@ export default {
       type: String,
       default: ""
     },
-    saveTimer: {
+    saveInterval: {
       type: Number,
       default: 0
     }
@@ -82,12 +82,12 @@ export default {
 
   mounted() {
     this.$refs.trix.addEventListener("trix-initialize", this.init);
-    if (this.saveTimer && this.savePath) {
+    if (this.saveInterval && this.savePath) {
       window.setInterval(() => {
         if (this.documentChanged()) {
           this.saveContent();
         }
-      }, this.saveTimer * 1000);
+      }, this.saveInterval * 1000);
     }
   },
 

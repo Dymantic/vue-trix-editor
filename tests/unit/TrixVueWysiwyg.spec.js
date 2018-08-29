@@ -359,7 +359,7 @@ describe("the TrixVue component", () => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
       savePath: "/test-save-url",
-      saveTimer: 0.1
+      saveInterval: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ saveContent: save, documentChanged: () => true });
@@ -373,7 +373,7 @@ describe("the TrixVue component", () => {
   it("will not attempt to auto save if there is no save path", done => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
-      saveTimer: 0.1
+      saveInterval: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ saveContent: save, documentChanged: () => true });
@@ -388,7 +388,7 @@ describe("the TrixVue component", () => {
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
       savePath: "/test-save-url",
-      saveTimer: 0.1
+      saveInterval: 0.1
     });
     const save = sinon.fake();
     wrapper.setMethods({ documentChanged: () => false });
