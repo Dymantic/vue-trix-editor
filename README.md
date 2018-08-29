@@ -1,5 +1,9 @@
 # Vue Trix Rich Text Editor
 
+## IMPORTANT: Still a WIP
+
+This is not on NPM yet.
+
 A Vue wrapper around the Trix rich-text editor, with support for images and auto-save.
 
 ### Note: No true two-one binding.
