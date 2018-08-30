@@ -1,6 +1,6 @@
 {
   "name": "@dymantic/vue-trix-editor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/TrixVue.umd.js",
   "repository": {
     "type": "git",
