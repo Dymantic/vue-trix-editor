@@ -6,6 +6,8 @@ This is not on NPM yet, but coming soon.
 
 A Vue wrapper around the Trix rich-text editor, with support for images and auto-save.
 
+[![Build Status](https://travis-ci.org/Dymantic/vue-trix-editor.svg?branch=master)](https://travis-ci.org/Dymantic/vue-trix-editor)
+
 ### Note: No true two-one binding.
 
 While you can use v-model to bind the editor contents (the formatted HTML) to your own Vue instance or component,you won't get true two-way binding with this component. That means that if you update the value of your content outside of the editor, it will not be taken into account by the editor. This means you have to treat the editor as the source of truth, not whatever you bind it to. The reason for this is that Trix only reads in the initial content once on initialization, so to force two-way binding, we would have to make Trix re-evaluate and rebuild the entire document on every keystroke, which is not really worth it.
