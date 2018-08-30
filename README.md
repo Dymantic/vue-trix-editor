@@ -43,17 +43,24 @@ npm install @dymantic/trix-vue
 ></trix-vue>
 ```
 
+### Uploading images
+
+If you use the upload images, by supplying the endpoint where your server accepts the image to the `image-upload-path` prop, you need to implement the server side parts yourself. Then ensure that the server reponds with the a body that includes `{src: [URL FOR YOUR STORED IMAGE]}`. If this is not present in the response, the image will not be inserted.
+
+By deafult, a max file size of 5MB is allowed for images, but this may be set via the `max-image-file-size` prop.
+
 ### Props
 
 The following props can be used to define the components behaviour
 
-| Prop name           | required | default | Notes                                                                         |
-| ------------------- | -------- | ------- | ----------------------------------------------------------------------------- |
-| initial-content     | false    | ""      | The content to populate the editor with initially (or use v-model)            |
-| image-upload-path   | false    | ""      | Supplying a value here allows for image uploads                               |
-| max-image-file-size | false    | 5       | Specify the maximum image filesize in MB                                      |
-| save-path           | false    | ""      | Supplying a url will allow content to be saved                                |
-| save-interval       | false    | null    | Time in seconds to auto-save. Only saves if there are changes since last save |
+| Prop name           | required | default   | Notes                                                                         |
+| ------------------- | -------- | --------- | ----------------------------------------------------------------------------- |
+| initial-content     | false    | ""        | The content to populate the editor with initially (or use v-model)            |
+| image-upload-path   | false    | ""        | Supplying a value here allows for image uploads                               |
+| max-image-file-size | false    | 5         | Specify the maximum image filesize in MB                                      |
+| save-path           | false    | ""        | Supplying a url will allow content to be saved                                |
+| save-as             | false    | "content" | If using save feature, the name of the form field will be this                |
+| save-interval       | false    | null      | Time in seconds to auto-save. Only saves if there are changes since last save |
 
 ### Events
 
