@@ -82,6 +82,7 @@ export default {
 
   mounted() {
     this.$refs.trix.addEventListener("trix-initialize", this.init);
+    Trix.config.attachments.preview.caption = { name: false, size: false };
     if (this.saveInterval && this.savePath) {
       window.setInterval(() => {
         if (this.documentChanged()) {
