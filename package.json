@@ -1,7 +1,6 @@
 {
   "name": "@dymantic/vue-trix-editor",
   "version": "0.1.0",
-  "private": true,
   "main": "dist/TrixVue.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
