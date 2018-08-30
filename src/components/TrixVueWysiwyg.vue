@@ -19,7 +19,6 @@
                      @trix-attachment-add="acceptImage"
                      ref="trix"
                      :input="uniqueId"
-                     v-pre
         ></trix-editor>
         <input type="hidden" :id="uniqueId" name="content">
     </div>
