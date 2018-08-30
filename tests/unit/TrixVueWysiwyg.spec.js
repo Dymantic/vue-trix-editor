@@ -398,4 +398,27 @@ describe("the TrixVue component", () => {
       done();
     });
   });
+
+  it("allows the name of the content field to be set by the save-as prop", done => {
+    moxios.install();
+    const wrapper = getWrapper({
+      savePath: "/test-save-url",
+      saveAs: "testbody"
+    });
+
+    wrapper.setMethods({ content: () => "<p>Some test content</p>" });
+
+    const save_button = wrapper.find("button.dd_save-content");
+    save_button.trigger("click");
+
+    moxios.wait(() => {
+      const req = moxios.requests.mostRecent();
+      expect(req.url).toBe("/test-save-url");
+      expect(req.config.data).toEqual(
+        JSON.stringify({ testbody: "<p>Some test content</p>" })
+      );
+      moxios.uninstall();
+      done();
+    });
+  });
 });

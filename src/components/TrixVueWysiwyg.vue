@@ -57,6 +57,10 @@ export default {
       type: String,
       default: ""
     },
+    saveAs: {
+      type: String,
+      default: "content"
+    },
     saveInterval: {
       type: Number,
       default: 0
@@ -141,8 +145,10 @@ export default {
 
     saveContent() {
       const last_doc = this.currentDocument();
+      const content = {};
+      content[this.saveAs] = this.content();
       axios
-        .post(this.savePath, { content: this.content() })
+        .post(this.savePath, content)
         .then(() => {
           this.last_saved_document = last_doc;
           this.last_saved_time = new Date();
