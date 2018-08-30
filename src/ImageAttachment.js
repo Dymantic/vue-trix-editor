@@ -27,7 +27,10 @@ export default class ImageAttachment {
 
     return new Promise((resolve, reject) => {
       axios
-        .post(url, fd)
+        .post(url, fd, {
+          onUploadProgress: ev =>
+            this.attachment.setUploadProgress((ev.loaded / ev.total) * 100)
+        })
         .then(({ data }) => {
           this.attachment.setAttributes({ url: data.src });
           resolve();
