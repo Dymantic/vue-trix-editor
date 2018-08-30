@@ -1,9 +1,5 @@
 # Vue Trix Rich Text Editor
 
-## IMPORTANT: Still a WIP
-
-This is not on NPM yet, but coming soon.
-
 A Vue wrapper around the Trix rich-text editor, with support for images and auto-save.
 
 [![Build Status](https://travis-ci.org/Dymantic/vue-trix-editor.svg?branch=master)](https://travis-ci.org/Dymantic/vue-trix-editor)
