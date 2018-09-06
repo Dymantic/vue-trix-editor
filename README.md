@@ -11,7 +11,7 @@ While you can use v-model to bind the editor contents (the formatted HTML) to yo
 ### Installation
 
 ```
-npm install @dymantic/trix-vue
+npm install @dymantic/vue-trix-editor
 ```
 
 ### Usage Example
