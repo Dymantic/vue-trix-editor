@@ -35,6 +35,13 @@ describe("the TrixVue component", () => {
     expect(editor.element.getAttribute("input")).toBe("dd-trix-input");
   });
 
+  it("accepts a placeholder prop", () => {
+    const wrapper = getWrapper({ placeholder: "test placeholder" });
+    const editor = wrapper.find("trix-editor");
+
+    expect(editor.element.getAttribute("placeholder")).toBe("test placeholder");
+  });
+
   it("can take the unique id and input name for the trix editor as a prop", () => {
     const wrapper = getWrapper({ uniqueId: "unique-test-id" });
     const editor_input = wrapper.find("#unique-test-id");
