@@ -57,6 +57,7 @@ The following props can be used to define the components behaviour
 | save-path           | false    | ""        | Supplying a url will allow content to be saved                                |
 | save-as             | false    | "content" | If using save feature, the name of the form field will be this                |
 | save-interval       | false    | null      | Time in seconds to auto-save. Only saves if there are changes since last save |
+| placeholder         | false    | ''        | The placeholder to be used for the empty state of the editor                  |
 
 ### Events
 
