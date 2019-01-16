@@ -19,6 +19,7 @@
                      @trix-attachment-add="acceptImage"
                      ref="trix"
                      :input="uniqueId"
+                     :placeholder="placeholder"
         ></trix-editor>
         <input type="hidden" :id="uniqueId" name="content">
     </div>
@@ -45,6 +46,13 @@ export default {
     uniqueId: {
       type: String,
       default: "dd-trix-input"
+    },
+    placeholder: {
+      type: String,
+      required: false,
+      default () {
+        return ''
+      }
     },
     imageUploadPath: {
       type: String
