@@ -1,28 +1,47 @@
 <template>
-    <div>
-      <div class="dd-trix-toolbar">
-        <label v-if="imageUploadPath" for="`image-file-input-${uniqueId}`" class="dd-insert-image-label">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#333" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-           <span>Insert Image</span>
-           <input ref="insertImageInput" type="file" id="`image-file-input-${uniqueId}`" class="hidden-input" @change="insertImage">
-        </label>
-        <div class="dd-save-content">
-          <span v-show="last_saved_time">Last saved: {{ last_saved_at }}</span>
-          <button class="dd_save-content" @click="saveContent" v-show="savePath">
-            <span>Save </span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="16px" fill="#bbb"><path d="M0 2C0 .9.9 0 2 0h14l4 4v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5 0v6h10V2H5zm6 1h3v4h-3V3z"/></svg>
-            </button>
-        </div>
-        
+  <div>
+    <div class="dd-trix-toolbar">
+      <label
+        v-if="imageUploadPath"
+        for="`image-file-input-${uniqueId}`"
+        class="dd-insert-image-label"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+          <path
+            fill="#333"
+            d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+          ></path>
+        </svg>
+        <span>Insert Image</span>
+        <input
+          ref="insertImageInput"
+          type="file"
+          id="`image-file-input-${uniqueId}`"
+          class="hidden-input"
+          @change="insertImage"
+        >
+      </label>
+      <div class="dd-save-content">
+        <span v-show="last_saved_time">Last saved: {{ last_saved_at }}</span>
+        <button class="dd_save-content" @click="saveContent" v-show="savePath">
+          <span>Save</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="16px" fill="#bbb">
+            <path
+              d="M0 2C0 .9.9 0 2 0h14l4 4v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5 0v6h10V2H5zm6 1h3v4h-3V3z"
+            ></path>
+          </svg>
+        </button>
       </div>
-        <trix-editor @trix-file-accept="guardFiles"
-                     @trix-attachment-add="acceptImage"
-                     ref="trix"
-                     :input="uniqueId"
-                     :placeholder="placeholder"
-        ></trix-editor>
-        <input type="hidden" :id="uniqueId" name="content">
     </div>
+    <trix-editor
+      @trix-file-accept="guardFiles"
+      @trix-attachment-add="acceptImage"
+      ref="trix"
+      :input="uniqueId"
+      :placeholder="placeholder"
+    ></trix-editor>
+    <input type="hidden" :id="uniqueId" name="content">
+  </div>
 </template>
 
 <script>
@@ -50,8 +69,8 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default () {
-        return ''
+      default() {
+        return "";
       }
     },
     imageUploadPath: {
