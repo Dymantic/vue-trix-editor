@@ -69,3 +69,16 @@ The editor will fire the following events:
 | image-attached      | null            | Fired after an image has been successfully uploaded and inserted into document          |
 | content-saved       | null            | Fired after editor contents have been successfully saved (200-ish response from server) |
 | content-save-failed | null            | Fired an error occurs while saving content to provided endpoint                         |
+
+### Pesky console warning for unkown element 'trix-editor'
+
+In development mode, you will get a warning about an unknown element `<trix-editor>`. This is because Trix uses custom elements, and vue assumes they should be vue components. These can't be ignored, because we do need to Vue to render the cusom elements.
+
+While the warning is harmless, it can be suppressed with the following code.
+
+```
+//somewhere in your code where you have access to the Vue instance
+Vue.config.ignoredElements = [
+    'trix-editor',
+];
+```
