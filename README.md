@@ -70,6 +70,54 @@ The editor will fire the following events:
 | content-saved       | null            | Fired after editor contents have been successfully saved (200-ish response from server) |
 | content-save-failed | null            | Fired an error occurs while saving content to provided endpoint                         |
 
+### Extending functionality through scoped slot
+
+_Requires Vue 2.6 or higher_
+
+This component provides a default scoped slot, which will render whatever you put in it in the top toolbar. The intention is to allow for your own buttons, etc to be added that allows you to insert content into the editor. An example would be to add embeds (Youtube, iframes, etc) as attachments.
+
+By adding the `v-slot` directive to the component you may get access to the `document` slot-prop, which is an object with two methods on it you may call. The methods are `attachment` and `html`, which will insert whatever content you provide as either an attachment or as html, respectively.
+
+Note: Html that Trix does not understand how to format will be ignored. You would be better off using an attachment for those situations.
+
+The example below should provide some guidance:
+
+```js
+//in your own component or page
+<trix-vue v-model="my_html"
+          image-upload-path="/url/to/upload/images"
+          max-image-file-size="20"
+          save-path="/url/to/save/contents"
+          :save-interval="10"
+          v-slot="{document}"
+>
+    <embed-youtube-button :trix="document"></embed-youtube-button>
+</trix-vue>
+
+//in your embed-youtube-button component
+<template>
+ // ....
+</template>
+
+<script>
+    props: ['trix'],
+
+    data() {
+        return {
+            attachment_content: '', //will probably be the v-model for a textarea
+        };
+    },
+
+    methods: {
+        // an example method that you would call to insert the attachmnet once the attachment_content has been entered
+        addAttachment(content) {
+            this.trix.attachment(this.attachment_content);
+        }
+    }
+</script>
+
+```
+
 ### Pesky console warning for unkown element 'trix-editor'
 
 In development mode, you will get a warning about an unknown element `<trix-editor>`. This is because Trix uses custom elements, and vue assumes they should be vue components. These can't be ignored, because we do need to Vue to render the cusom elements.

@@ -21,6 +21,9 @@
           @change="insertImage"
         >
       </label>
+      <div>
+        <slot v-bind:document="document"></slot>
+      </div>
       <div class="dd-save-content">
         <span v-show="last_saved_time">Last saved: {{ last_saved_at }}</span>
         <button class="dd_save-content" @click="saveContent" v-show="savePath">
@@ -97,7 +100,8 @@ export default {
   data() {
     return {
       last_saved_document: null,
-      last_saved_time: null
+      last_saved_time: null,
+      editor: null
     };
   },
 
@@ -108,6 +112,14 @@ export default {
       }
 
       return this.last_saved_time.toLocaleTimeString();
+    },
+
+    document() {
+      return {
+        attachment: content => this.insertAttactment(content),
+
+        html: content => this.insertHtml(content)
+      };
     }
   },
 
@@ -125,6 +137,7 @@ export default {
 
   methods: {
     init() {
+      this.editor = this.$refs.trix.editor;
       this.$refs.trix.editor.insertHTML(this.initialContent);
       this.last_saved_document = this.currentDocument();
       this.$refs.trix.addEventListener("trix-change", () => {
@@ -190,6 +203,19 @@ export default {
 
     currentDocument() {
       return this.$refs.trix.editor.getDocument();
+    },
+
+    insertFromPlugin({ type, content }) {
+      console.log({ type, content });
+    },
+
+    insertAttactment(content) {
+      const attachment = new Trix.Attachment({ content });
+      this.editor.insertAttachment(attachment);
+    },
+
+    insertHtml(content) {
+      this.editor.insertHTML(content);
     }
   }
 };

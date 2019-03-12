@@ -53,14 +53,17 @@ describe("the TrixVue component", () => {
 
   it("prevents file attachments if no image path prop is given", () => {
     const wrapper = getWrapper();
-    const ev = {
-      preventDefault: sinon.fake()
-    };
+    wrapper.setMethods({
+      guardFiles: sinon.fake(),
+      acceptImage: sinon.fake()
+    });
+
     const editor = wrapper.find("trix-editor");
 
-    editor.trigger("trix-file-accept", ev);
+    editor.trigger("trix-file-accept");
 
-    expect(ev.preventDefault.calledOnce).toBe(true);
+    expect(wrapper.vm.guardFiles.calledOnce).toBe(true);
+    expect(wrapper.vm.acceptImage.calledOnce).toBe(false);
   });
 
   it("it can process an attached file if there is an image upload path", () => {
