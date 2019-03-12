@@ -205,10 +205,6 @@ export default {
       return this.$refs.trix.editor.getDocument();
     },
 
-    insertFromPlugin({ type, content }) {
-      console.log({ type, content });
-    },
-
     insertAttactment(content) {
       const attachment = new Trix.Attachment({ content });
       this.editor.insertAttachment(attachment);
