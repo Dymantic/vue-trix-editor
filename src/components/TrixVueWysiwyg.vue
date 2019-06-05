@@ -39,6 +39,7 @@
     <trix-editor
       @trix-file-accept="guardFiles"
       @trix-attachment-add="acceptImage"
+      @trix-change="$emit('content-changed')"
       ref="trix"
       :input="uniqueId"
       :placeholder="placeholder"
