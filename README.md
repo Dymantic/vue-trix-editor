@@ -67,6 +67,7 @@ The editor will fire the following events:
 | ------------------- | --------------- | --------------------------------------------------------------------------------------- |
 | image-rejected      | (file, message) | Fired if a user's image cannot be attached, either due to network error or invalid file |
 | image-attached      | null            | Fired after an image has been successfully uploaded and inserted into document          |
+| content-changed     | null            | Fired whenever editor content changes.                                                  |
 | content-saved       | null            | Fired after editor contents have been successfully saved (200-ish response from server) |
 | content-save-failed | null            | Fired an error occurs while saving content to provided endpoint                         |
 
