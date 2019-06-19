@@ -3,7 +3,7 @@
     <div class="dd-trix-toolbar">
       <label
         v-if="imageUploadPath"
-        for="`image-file-input-${uniqueId}`"
+        :for="`image-file-input-${uniqueId}`"
         class="dd-insert-image-label"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
@@ -16,7 +16,7 @@
         <input
           ref="insertImageInput"
           type="file"
-          id="`image-file-input-${uniqueId}`"
+          :id="`image-file-input-${uniqueId}`"
           class="hidden-input"
           @change="insertImage"
         >
