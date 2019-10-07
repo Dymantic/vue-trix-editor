@@ -225,12 +225,12 @@ export default {
   margin: 0.25rem 0;
 }
 
-.plugins-button-bar {
+.plugin-button-bar {
   display: flex;
   align-items: center;
 }
 
-.plugins-button-bar > * {
+.plugin-button-bar > * {
   margin: 0 0.5rem;
 }
 
