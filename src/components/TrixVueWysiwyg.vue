@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dd-vue-trix" :class="{'stick': sticky}">
     <div class="dd-trix-toolbar">
       <label
         v-if="imageUploadPath"
@@ -95,6 +95,10 @@ export default {
     saveInterval: {
       type: Number,
       default: 0
+    },
+    sticky: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -223,6 +227,8 @@ export default {
   display: flex;
   justify-content: space-between;
   margin: 0.25rem 0;
+  height: 36px;
+  padding: 0.25rem 0;
 }
 
 .plugin-button-bar {
@@ -273,6 +279,18 @@ trix-editor {
   padding: 0.4em 0.6em;
   min-height: 5em;
   outline: none;
+}
+
+.dd-vue-trix.stick .dd-trix-toolbar {
+  background: #fff;
+  position: sticky;
+  top: 0;
+}
+
+.dd-vue-trix.stick trix-toolbar {
+  background: #fff;
+  position: sticky;
+  top: 36px;
 }
 trix-toolbar * {
   box-sizing: border-box;
