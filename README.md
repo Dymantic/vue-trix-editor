@@ -58,6 +58,7 @@ The following props can be used to define the components behaviour
 | save-as             | false    | "content" | If using save feature, the name of the form field will be this                |
 | save-interval       | false    | null      | Time in seconds to auto-save. Only saves if there are changes since last save |
 | placeholder         | false    | ''        | The placeholder to be used for the empty state of the editor                  |
+| sticky              | false    | `false`   | Sticky position the toolbar to remain on the screen while editing.            |
 
 ### Events
 
