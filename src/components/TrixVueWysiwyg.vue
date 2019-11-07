@@ -281,6 +281,10 @@ trix-editor {
   outline: none;
 }
 
+.dd-vue-trix.stick .attachment {
+  z-index: -1;
+}
+
 .dd-vue-trix.stick .dd-trix-toolbar {
   background: #fff;
   position: sticky;
