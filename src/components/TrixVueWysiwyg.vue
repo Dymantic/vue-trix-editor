@@ -282,19 +282,21 @@ trix-editor {
 }
 
 .dd-vue-trix.stick .attachment {
-  z-index: -1;
+  z-index: 1;
 }
 
 .dd-vue-trix.stick .dd-trix-toolbar {
   background: #fff;
   position: sticky;
   top: 0;
+  z-index: 99;
 }
 
 .dd-vue-trix.stick trix-toolbar {
   background: #fff;
   position: sticky;
   top: 36px;
+  z-index: 99;
 }
 trix-toolbar * {
   box-sizing: border-box;
