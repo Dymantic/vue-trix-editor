@@ -2,7 +2,7 @@
   <div class="dd-vue-trix" :class="{'stick': sticky}">
     <div class="dd-trix-toolbar">
       <label
-        v-if="imageUploadPath"
+        v-if="!insertImagesWithDialog && imageUploadPath"
         :for="`image-file-input-${uniqueId}`"
         class="dd-insert-image-label"
       >
@@ -21,6 +21,19 @@
           @change="insertImage"
         />
       </label>
+      <button
+        v-if="imageUploadPath && insertImagesWithDialog"
+        @click="showImageDialog = true"
+        class="dd-insert-image-label"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+          <path
+            fill="#333"
+            d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+          />
+        </svg>
+        <span>Insert image</span>
+      </button>
       <div class="plugin-button-bar">
         <slot v-bind:document="document"></slot>
       </div>
@@ -45,6 +58,64 @@
       :placeholder="placeholder"
     ></trix-editor>
     <input type="hidden" :id="uniqueId" name="content" />
+    <div
+      :class="{'hidden': !showImageDialog}"
+      class="tve-image-dialog-outer"
+      v-if="insertImagesWithDialog && imageUploadPath"
+    >
+      <div class="tve-image-dialog-inner">
+        <p>Insert an Image</p>
+        <span v-show="image_attach_error" class="error-messages">{{ image_attach_error }}</span>
+        <div
+          class="tve-image-dropzone"
+          @drop.prevent="handleDropFiles"
+          @dragenter.prevent="drop_hover=true"
+          @dragover.prevent="drop_hover=true"
+          @dragleave="drop_hover=false"
+          :class="{'hovering': drop_hover}"
+        >
+          <label :for="`image-file-input-${uniqueId}`" class="tve-image-label">
+            <span v-show="!image_preview">Drag and drop an image, or click to browse</span>
+            <input
+              style="display: none;"
+              ref="insertImageInput"
+              type="file"
+              :id="`image-file-input-${uniqueId}`"
+              class="hidden-input"
+              @change="insertNewImage"
+            />
+          </label>
+          <img
+            v-if="image_preview"
+            :src="image_preview"
+            style="max-height: 15rem; max-width: 100%; display: block; margin: auto;"
+          />
+        </div>
+        <div class="tve-alt-text-block">
+          <p>Alt text:</p>
+          <input
+            type="text"
+            v-model="attached_image_alt_text"
+            placeholder="Enter something for the alt attribute"
+          />
+          <p>Caption:</p>
+          <input
+            type="text"
+            v-model="attached_image_caption"
+            placeholder="Add a caption for your image"
+          />
+        </div>
+        <div class="tve-button-bar">
+          <button type="button" class="cancel" @click="showImageDialog = false">Cancel</button>
+          <button
+            :disabled="!attached_image_url"
+            type="button"
+            class="insert"
+            @click="insertAttachedImage"
+          >{{ insert_image_button }}</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,6 +133,10 @@ export default {
   },
 
   props: {
+    insertImagesWithDialog: {
+      type: Boolean,
+      default: false
+    },
     initialContent: {
       type: String,
       default: ""
@@ -106,7 +181,16 @@ export default {
     return {
       last_saved_document: null,
       last_saved_time: null,
-      editor: null
+      editor: null,
+      showImageDialog: false,
+      drop_hover: false,
+      image_preview: null,
+      image_attach_error: "",
+      attached_image_url: null,
+      attached_image_alt_text: "",
+      uploading: false,
+      upload_progress: 0,
+      attached_image_caption: ""
     };
   },
 
@@ -125,6 +209,14 @@ export default {
 
         html: content => this.insertHtml(content)
       };
+    },
+
+    insert_image_button() {
+      if (this.uploading) {
+        return `Uploading ${parseInt(this.upload_progress)}%`;
+      }
+
+      return "Insert";
     }
   },
 
@@ -217,12 +309,222 @@ export default {
 
     insertHtml(content) {
       this.editor.insertHTML(content);
+    },
+
+    insertNewImage({ target }) {
+      this.processInsertedImage(this.takeFile());
+    },
+
+    handleDropFiles(ev) {
+      const files = ev.target.files || ev.dataTransfer.files;
+      this.processInsertedImage(files[0]);
+    },
+
+    processInsertedImage(file) {
+      this.image_attach_error = "";
+      this.image_preview = null;
+      this.attached_image_url = "";
+      if (this.checkInsertedFile(file)) {
+        this.showImagePreview(file);
+        this.uploadAttachedImage(file);
+      }
+    },
+
+    checkInsertedFile(file) {
+      if (file.type.indexOf("image") !== 0) {
+        this.image_attach_error = "The file is not a valid image";
+        return false;
+      }
+
+      if (
+        this.maxImageFileSize &&
+        file.size > this.maxImageFileSize * 1048576
+      ) {
+        this.image_attach_error = `The image filesize exceeds the limit of ${maxSizeMB}MB`;
+        return false;
+      }
+
+      return true;
+    },
+
+    showImagePreview(file) {
+      const reader = new FileReader();
+      reader.addEventListener(
+        "load",
+        () => (this.image_preview = reader.result)
+      );
+      reader.readAsDataURL(file);
+    },
+
+    uploadAttachedImage(file) {
+      let fd = new FormData();
+      fd.append("image", file);
+
+      this.uploading = true;
+      axios
+        .post(this.imageUploadPath, fd, {
+          onUploadProgress: ev =>
+            (this.upload_progress = (ev.loaded / ev.total) * 100)
+        })
+        .then(({ data }) => {
+          this.attached_image_url = data.src;
+        })
+        .catch(({ response }) => {
+          if (response.status === 422) {
+            this.image_attach_error = "The image is not valid.";
+          } else {
+            this.image_attach_error = "There was an error uploading the image.";
+          }
+        })
+        .then(() => (this.uploading = false));
+    },
+
+    insertAttachedImage() {
+      const content = `<img src="${this.attached_image_url}" alt="${this.attached_image_alt_text}">`;
+      const attachment = new Trix.Attachment({ content });
+      this.editor.insertAttachment(attachment);
+      this.editor.composition.updateAttributesForAttachment(
+        { caption: this.attached_image_caption },
+        attachment
+      );
+      this.resetAttachmentState();
+      this.showImageDialog = false;
+    },
+
+    resetAttachmentState() {
+      this.attached_image_alt_text = "";
+      this.attached_image_caption = "";
+      this.attached_image_url = "";
+      this.image_attach_error = "";
+      this.image_preview = null;
     }
   }
 };
 </script>
 
 <style>
+.tve-image-dialog-inner button:disabled {
+  opacity: 0.5;
+}
+.tve-image-dialog-outer {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  display: flex;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.tve-image-dialog-outer.hidden {
+  display: none;
+}
+
+.tve-image-dialog-inner {
+  background: white;
+  border-radius: 8px;
+  width: 100vw;
+  max-width: 30rem;
+  padding: 2rem;
+}
+
+.tve-image-dialog-inner > p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.tve-image-dialog-inner .error-messages {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  background: salmon;
+  border: 1px solid darkred;
+  border-radius: 5px;
+}
+
+.tve-image-dropzone {
+  height: 15rem;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.tve-image-dropzone.hovering {
+  height: 15rem;
+  position: relative;
+  border: 1px solid #41b883;
+  border-radius: 8px;
+}
+
+.tve-image-dropzone label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.tve-image-dropzone label span {
+  display: block;
+  margin: auto;
+}
+
+.tve-alt-text-block > p {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+  font-family: sans-serif;
+}
+
+.tve-alt-text-block > input {
+  display: block;
+  border: 1px solid #e5e5e5;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.tve-button-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.tve-button-bar button {
+  margin: 0 0 0 1rem;
+  border: none;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.125);
+  border-radius: 5px;
+  font-family: sans-serif;
+  font-size: 1rem;
+  padding: 0.25rem 1rem;
+}
+
+.tve-button-bar .cancel {
+  background: #e5e5e5;
+}
+
+.tve-button-bar .cancel:hover {
+  background: #cbeefa;
+}
+
+.tve-button-bar .insert {
+  background: #41b883;
+  color: white;
+}
+
+.tve-button-bar .insert:hover {
+  background: #35495e;
+}
+
 .dd-trix-toolbar {
   display: flex;
   justify-content: space-between;

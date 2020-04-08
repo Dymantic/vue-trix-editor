@@ -45,20 +45,25 @@ If you use the upload images, by supplying the endpoint where your server accept
 
 By deafult, a max file size of 5MB is allowed for images, but this may be set via the `max-image-file-size` prop.
 
+#### Adding alt attributes for your images
+
+The regular workflow for adding images does not allow for adding alt attributes for your images. However, if you use the `insert-images-with-dialog` prop (set to true), you may upload your image and include the alt text. The insert image button will now bring up a modal dialog for you to add your image and the alt text, as well as the caption. The disadvantage to this is that the image needs to completely upload before you can insert it into the document, which is not the case with the regular image workflow.
+
 ### Props
 
 The following props can be used to define the components behaviour
 
-| Prop name           | required | default   | Notes                                                                         |
-| ------------------- | -------- | --------- | ----------------------------------------------------------------------------- |
-| initial-content     | false    | ""        | The content to populate the editor with initially (or use v-model)            |
-| image-upload-path   | false    | ""        | Supplying a value here allows for image uploads                               |
-| max-image-file-size | false    | 5         | Specify the maximum image filesize in MB                                      |
-| save-path           | false    | ""        | Supplying a url will allow content to be saved                                |
-| save-as             | false    | "content" | If using save feature, the name of the form field will be this                |
-| save-interval       | false    | null      | Time in seconds to auto-save. Only saves if there are changes since last save |
-| placeholder         | false    | ''        | The placeholder to be used for the empty state of the editor                  |
-| sticky              | false    | `false`   | Sticky position the toolbar to remain on the screen while editing.            |
+| Prop name                 | required | default   | Notes                                                                         |
+| ------------------------- | -------- | --------- | ----------------------------------------------------------------------------- |
+| initial-content           | false    | ""        | The content to populate the editor with initially (or use v-model)            |
+| image-upload-path         | false    | ""        | Supplying a value here allows for image uploads                               |
+| max-image-file-size       | false    | 5         | Specify the maximum image filesize in MB                                      |
+| save-path                 | false    | ""        | Supplying a url will allow content to be saved                                |
+| save-as                   | false    | "content" | If using save feature, the name of the form field will be this                |
+| save-interval             | false    | null      | Time in seconds to auto-save. Only saves if there are changes since last save |
+| placeholder               | false    | ''        | The placeholder to be used for the empty state of the editor                  |
+| sticky                    | false    | `false`   | Sticky position the toolbar to remain on the screen while editing.            |
+| insert-images-with-dialog | false    | `false`   | If true, you may use a modal dialog to upload images with alt text            |
 
 ### Events
 
