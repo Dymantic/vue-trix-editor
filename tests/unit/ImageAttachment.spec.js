@@ -15,8 +15,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img instanceof ImageAttachment).toBe(true);
@@ -27,13 +27,13 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.file).toEqual({
       size: 5000,
-      type: "image/png"
+      type: "image/png",
     });
   });
 
@@ -41,8 +41,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.isValid()).toBe(true);
@@ -52,8 +52,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
 
     const img = new ImageAttachment(attachment);
@@ -64,8 +64,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
-      }
+        type: "text/html",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.isValid()).toEqual(false);
@@ -75,8 +75,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 80000000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.isValid({ maxSizeMB: 5 })).toEqual(false);
@@ -86,8 +86,8 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 9000000,
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.isValid({ maxSizeMB: 5 })).toEqual(false);
@@ -100,20 +100,20 @@ describe("an inserted image file", () => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
-      }
+        type: "text/html",
+      },
     };
     const img = new ImageAttachment(attachment);
     expect(img.isValid({ maxSizeMB: 5 })).toEqual(false);
     expect(img.validationMessage).toBe("The file is not a valid image");
   });
 
-  it("can be uploaded to a given url", done => {
+  it("can be uploaded to a given url", (done) => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
-      }
+        type: "text/html",
+      },
     };
     const img = new ImageAttachment(attachment);
 
@@ -130,60 +130,82 @@ describe("an inserted image file", () => {
     expect(response instanceof Promise).toBe(true);
   });
 
-  it("uploadTo resolves with the no data from server on succesfull upload", done => {
+  it("uses the passed axios config options", (done) => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
+        type: "image/jpg",
       },
-      setAttributes: () => {}
+    };
+    const img = new ImageAttachment(attachment, {
+      baseURL: "https://test.test",
+      foo: "bar",
+    });
+
+    moxios.wait(() => {
+      let request = moxios.requests.mostRecent();
+      expect(request.url).toBe("https://test.test/test-url");
+      expect(request.config.foo).toBe("bar");
+      done();
+    });
+
+    const response = img.uploadTo("/test-url");
+  });
+
+  it("uploadTo resolves with the data from server on succesfull upload", (done) => {
+    const attachment = {
+      file: {
+        size: 5000,
+        type: "text/html",
+      },
+      setAttributes: () => {},
     };
     const img = new ImageAttachment(attachment);
     moxios.stubRequest("/test-url", {
       status: 200,
-      response: { src: "testpic.png" }
+      response: { src: "testpic.png" },
     });
 
-    const resp = img.uploadTo("/test-url").then(res => {
+    const resp = img.uploadTo("/test-url").then((res) => {
       expect(res).not.toBeDefined();
       done();
     });
   });
 
-  it("uploadTo rejects with the file and a mesage if upload fails", done => {
+  it("uploadTo rejects with the file and a mesage if upload fails", (done) => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
-      }
+        type: "text/html",
+      },
     };
     const img = new ImageAttachment(attachment);
     moxios.stubRequest("/test-url", {
-      status: 404
+      status: 404,
     });
 
-    img.uploadTo("/test-url").catch(err => {
+    img.uploadTo("/test-url").catch((err) => {
       expect(err.file).toEqual(attachment.file);
       expect(err.message).toBe("Upload failed with 404 response");
       done();
     });
   });
 
-  it("sets the url attribute of the attachment after successful upload", done => {
+  it("sets the url attribute of the attachment after successful upload", (done) => {
     const attachment = {
       file: {
         size: 5000,
-        type: "text/html"
+        type: "text/html",
       },
-      setAttributes: sinon.fake()
+      setAttributes: sinon.fake(),
     };
     const img = new ImageAttachment(attachment);
     moxios.stubRequest("/test-url", {
       status: 200,
-      response: { src: "testpic.png" }
+      response: { src: "testpic.png" },
     });
 
-    const resp = img.uploadTo("/test-url").then(res => {
+    const resp = img.uploadTo("/test-url").then((res) => {
       expect(
         img.attachment.setAttributes.calledWith({ url: "testpic.png" })
       ).toBe(true);

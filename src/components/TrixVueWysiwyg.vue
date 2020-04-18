@@ -174,6 +174,12 @@ export default {
     sticky: {
       type: Boolean,
       default: false
+    },
+    axiosConfig: {
+      type: Object,
+      default: function() {
+        return {};
+      }
     }
   },
 
@@ -248,7 +254,9 @@ export default {
 
     acceptImage(ev) {
       if (ev.hasOwnProperty("attachment") && ev.attachment.file) {
-        return this.processFile(new ImageAttachment(ev.attachment));
+        return this.processFile(
+          new ImageAttachment(ev.attachment, this.axiosConfig)
+        );
       }
     },
 
@@ -285,7 +293,7 @@ export default {
       const content = {};
       content[this.saveAs] = this.content();
       axios
-        .post(this.savePath, content)
+        .post(this.savePath, content, this.axiosConfig)
         .then(() => {
           this.last_saved_document = last_doc;
           this.last_saved_time = new Date();
@@ -359,13 +367,15 @@ export default {
     uploadAttachedImage(file) {
       let fd = new FormData();
       fd.append("image", file);
+      const config = {
+        ...this.axiosConfig,
+        onUploadProgress: ev =>
+          (this.upload_progress = (ev.loaded / ev.total) * 100)
+      };
 
       this.uploading = true;
       axios
-        .post(this.imageUploadPath, fd, {
-          onUploadProgress: ev =>
-            (this.upload_progress = (ev.loaded / ev.total) * 100)
-        })
+        .post(this.imageUploadPath, fd, config)
         .then(({ data }) => {
           this.attached_image_url = data.src;
         })

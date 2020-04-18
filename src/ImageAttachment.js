@@ -1,10 +1,11 @@
 import axios from "axios";
 
 export default class ImageAttachment {
-  constructor(attachment) {
+  constructor(attachment, axiosConfig = {}) {
     this.attachment = attachment;
     this.file = attachment.file;
     this.validationMessage = "File not validated";
+    this.axiosConfig = axiosConfig;
   }
 
   isValid({ maxSizeMB } = {}) {
@@ -25,22 +26,25 @@ export default class ImageAttachment {
     let fd = new FormData();
     fd.append("image", this.file);
 
+    const config = {
+      ...this.axiosConfig,
+      onUploadProgress: (ev) =>
+        this.attachment.setUploadProgress((ev.loaded / ev.total) * 100),
+    };
+
     return new Promise((resolve, reject) => {
       axios
-        .post(url, fd, {
-          onUploadProgress: ev =>
-            this.attachment.setUploadProgress((ev.loaded / ev.total) * 100)
-        })
+        .post(url, fd, config)
         .then(({ data }) => {
           this.attachment.setAttributes({ url: data.src });
           resolve();
         })
-        .catch(err =>
+        .catch((err) =>
           reject({
             file: this.file,
             message: err.response
               ? `Upload failed with ${err.response.status} response`
-              : err
+              : err,
           })
         );
     });
