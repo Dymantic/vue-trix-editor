@@ -64,6 +64,7 @@ The following props can be used to define the components behaviour
 | placeholder               | false    | ''        | The placeholder to be used for the empty state of the editor                  |
 | sticky                    | false    | `false`   | Sticky position the toolbar to remain on the screen while editing.            |
 | insert-images-with-dialog | false    | `false`   | If true, you may use a modal dialog to upload images with alt text            |
+| axios-config              | false    | `{}`      | Config object to be passed to axios when posting content or uploading images  |
 
 ### Events
 
