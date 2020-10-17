@@ -343,7 +343,7 @@ describe("the TrixVue component", () => {
     });
   });
 
-  it("emits a content-ave-failed event with fail response if save request fails", done => {
+  it("emits a content-save-failed event with fail response if save request fails", done => {
     moxios.install();
     const wrapper = getWrapper({
       initialContent: "<p>Some test content</p>",
@@ -431,4 +431,18 @@ describe("the TrixVue component", () => {
       done();
     });
   });
+
+  it("does not include multiple heading levels by default", () => {
+    const wrapper = getWrapper();
+
+    const h2 = wrapper.find("button[data-trix-attribute='heading_two']");
+    const h3 = wrapper.find("button[data-trix-attribute='heading_three']");
+    const h4 = wrapper.find("button[data-trix-attribute='heading_four']");
+
+    expect(h2.element).not.toBeDefined();
+    expect(h3.element).not.toBeDefined();
+    expect(h4.element).not.toBeDefined();
+  });
+
+  
 });

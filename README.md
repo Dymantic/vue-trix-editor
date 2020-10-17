@@ -65,6 +65,7 @@ The following props can be used to define the components behaviour
 | sticky                    | false    | `false`   | Sticky position the toolbar to remain on the screen while editing.            |
 | insert-images-with-dialog | false    | `false`   | If true, you may use a modal dialog to upload images with alt text            |
 | axios-config              | false    | `{}`      | Config object to be passed to axios when posting content or uploading images  |
+| multi-headings            | false    | false     | Allow multiple heading lavels in toolbar (adds h2, h3 and h4)                 |
 
 ### Events
 

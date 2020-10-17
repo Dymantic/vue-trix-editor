@@ -175,6 +175,10 @@ export default {
       type: Boolean,
       default: false
     },
+    multiHeadings: {
+      type: Boolean,
+      default: false
+    },
     axiosConfig: {
       type: Object,
       default: function() {
@@ -229,6 +233,29 @@ export default {
   mounted() {
     this.$refs.trix.addEventListener("trix-initialize", this.init);
     Trix.config.attachments.preview.caption = { name: false, size: false };
+
+    if(this.multiHeadings) {
+      Trix.config.blockAttributes.heading_two = {
+        tagName: "h2",
+        terminal: true,
+        breakOnReturn: true,
+        group: false
+    };
+
+    Trix.config.blockAttributes.heading_three = {
+        tagName: "h3",
+        terminal: true,
+        breakOnReturn: true,
+        group: false
+    };
+    Trix.config.blockAttributes.heading_four = {
+        tagName: "h4",
+        terminal: true,
+        breakOnReturn: true,
+        group: false
+    };
+    }
+    
     if (this.saveInterval && this.savePath) {
       window.setInterval(() => {
         if (this.documentChanged()) {
@@ -246,6 +273,27 @@ export default {
       this.$refs.trix.addEventListener("trix-change", () => {
         this.$emit("input", this.content());
       });
+
+      if(this.multiHeadings) {
+        this.insertHeadingButtons();
+      }
+
+      
+    },
+
+    insertHeadingButtons() {
+        const h2ButtonHTML = '<button type="button" class="trix-button" data-trix-attribute="heading_two" title="Subheading">H2</button>';
+
+        const h3ButtonHTML = '<button type="button" class="trix-button" data-trix-attribute="heading_three" title="Subheading">H3</button>';
+
+        const h4ButtonHTML = '<button type="button" class="trix-button" data-trix-attribute="heading_four" title="Subheading">H4</button>';
+
+        const sibling1 = document.querySelector(".trix-button[data-trix-attribute='heading1']");
+            sibling1.insertAdjacentHTML("afterend", h2ButtonHTML);
+            const sibling2 = document.querySelector("[data-trix-attribute='heading_two']");
+            sibling2.insertAdjacentHTML("afterend", h3ButtonHTML);
+            const sibling3 = document.querySelector("[data-trix-attribute='heading_three']");
+            sibling3.insertAdjacentHTML("afterend", h4ButtonHTML);
     },
 
     insertImage() {
