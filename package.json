@@ -15,7 +15,7 @@
     "wtest": "vue-cli-service test:unit --watch"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "trix": "^0.12.1",
     "vue": "^2.6.12"
   },
